@@ -8,13 +8,13 @@
 
 [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://shell.cloud.google.com/cloudshell/open?cloudshell_git_repo=https://github.com/pyrhic/oto-weekly-report&cloudshell_tutorial=cloudshell-tutorial.md)
 
-열리면 화면에 나오는 안내(튜토리얼 패널)를 따라 `bash gcp-setup.sh` 명령어를 실행하세요. 1분 정도 걸리고, 끝나면 `{ "type": "service_account", ... }`로 시작하는 열쇠(키) 텍스트가 나옵니다.
+열리면 화면에 나오는 안내(튜토리얼 패널)에서 `bash gcp-setup.sh` 명령어 상자를 클릭하면 터미널에 입력됩니다. **터미널을 클릭하고 Enter를 한 번 눌러서 실행**하세요 (보안 정책상 실행은 직접 확인해야 합니다). 1분 정도 걸리고, 끝나면 `key.json` 파일이 자동으로 내 컴퓨터에 다운로드됩니다.
 
 (버튼이 안 열리면 수동으로도 가능합니다: `console.cloud.google.com` 접속 → 오른쪽 위 터미널 아이콘 클릭 → 이 레포의 `gcp-setup.sh` 내용을 복사해서 붙여넣기)
 
 ## 2. Cloudflare에 등록하기
 
-1. 방금 나온 `{ ... }` 전체를 복사
+1. 다운로드된 `key.json`을 메모장으로 열어서 전체 내용을 복사
 2. Cloudflare 대시보드 → 내 Pages 프로젝트 → Settings → Variables and secrets → Add
    - Type: **Secret**
    - Name: `GOOGLE_SERVICE_ACCOUNT_KEY`
