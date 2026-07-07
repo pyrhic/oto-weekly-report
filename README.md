@@ -1,4 +1,4 @@
-# oto-weekly-report
+# OTO WEEKLY REPORT
 
 매일 한 일을 입력하면 주간보고서로 자동 정리해주는 아주 작은 도구입니다.
 **Cloudflare 계정 하나면 됩니다** (구글시트, Supabase 등 다른 외부 서비스 필요 없음).
