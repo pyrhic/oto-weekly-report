@@ -1,3 +1,5 @@
+import { syncToSheet } from "./sync-sheet.js";
+
 export async function onRequestPost(context) {
   const { request, env } = context;
   try {
@@ -19,6 +21,8 @@ export async function onRequestPost(context) {
     )
       .bind(date, dow, tasks, leave)
       .run();
+
+    await syncToSheet(env, { date, dow, tasks, leave });
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

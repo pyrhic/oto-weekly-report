@@ -36,15 +36,19 @@
 
 **⚠️ 바인딩을 추가/저장한 뒤에는 반드시 한 번 재배포해야 적용됩니다.** (Deployments 탭에서 최신 배포 옆 "Retry deployment"를 누르거나, 아무 커밋이나 하나 push하면 됩니다.)
 
-### 6. 관리자 비밀번호 설정 (창고/삭제 기능 쓸 경우)
-Settings → Variables and secrets → `ADMIN_PASSWORD` (Secret 타입)으로 원하는 비밀번호 추가
-
-### 7. 완료
+### 6. 완료
 `https://프로젝트이름.pages.dev` 접속해서 확인
+
+### 7. (선택) 구글시트에도 자동 백업하고 싶다면
+[GOOGLE_SETUP.md](./GOOGLE_SETUP.md) 참고 (AI 도움 없이 혼자 따라 할 수 있게 정리해뒀습니다)
 
 ## 구조
 - `index.html`, `daily-log.html`, `reports.html` — 화면
-- `functions/api/submit-log.js` — 오늘 업무 저장
+- `functions/api/submit-log.js` — 오늘 업무 저장 (+선택적으로 구글시트 동기화)
+- `functions/api/update-log.js` — 기존 일지 수정
+- `functions/api/daily-logs.js` — 최근 일지 목록 조회
 - `functions/api/generate-report.js` — 이번 주 보고서 조립 (AI로 문체 다듬기 포함)
 - `functions/api/reports.js` — 저장된 보고서 목록 조회
+- `functions/api/sync-sheet.js` — 구글시트 동기화 (선택 기능)
 - `schema.sql` — D1 테이블 구조
+- `GOOGLE_SETUP.md` — 구글시트 연동 설정 가이드

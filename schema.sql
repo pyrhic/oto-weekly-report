@@ -18,3 +18,9 @@ create table weekly_reports (
   archived integer default 0,  -- 0=공개, 1=숨김
   created_at text default (datetime('now'))
 );
+
+-- 구글시트 연동(선택 기능)을 위한 간단한 설정 저장소
+create table settings (
+  key text primary key,
+  value text
+);
