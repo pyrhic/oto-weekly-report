@@ -23,6 +23,9 @@
       <div class="msg" id="msg"></div>
     </form>
     <a class="back" href="/">← 돌아가기</a>
+
+    <h2 style="font-size:1.1rem;margin-top:10px;">일일업무일지</h2>
+    <div id="logList"><div class="empty">불러오는 중...</div></div>
   </div>
 
 <script>
@@ -30,47 +33,95 @@
   const dateInput = document.getElementById("date");
   dateInput.value = new Date().toISOString().slice(0, 10);
 
+  let editingId = null;
+
+  function resetForm() {
+    editingId = null;
+    document.getElementById("submitBtn").textContent = "저장";
+    document.getElementById("tasks").value = "";
+    document.getElementById("leave").value = "";
+  }
+
+  async function loadLogs() {
+    const box = document.getElementById("logList");
+    try {
+      const res = await fetch("/api/daily-logs");
+      const rows = await res.json();
+      if (!rows.length) {
+        box.innerHTML = '<div class="empty">아직 입력된 기록이 없습니다.</div>';
+        return;
+      }
+      box.innerHTML = rows
+        .map(
+          (row) => `<div class="report">
+            <div class="period">${row.log_date}(${row.dow || ""})${row.leave_note ? `<span class="leave">${row.leave_note}</span>` : ""}</div>
+            <div class="day">${row.tasks.replace(/\n/g, "<br>")}</div>
+            <button type="button" data-id="${row.id}" data-tasks="${encodeURIComponent(row.tasks)}" data-leave="${encodeURIComponent(row.leave_note || "")}" class="edit-btn" style="margin-top:10px;width:auto;padding:6px 14px;font-size:0.85rem;">수정</button>
+          </div>`
+        )
+        .join("");
+
+      document.querySelectorAll(".edit-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          editingId = btn.dataset.id;
+          document.getElementById("tasks").value = decodeURIComponent(btn.dataset.tasks);
+          document.getElementById("leave").value = decodeURIComponent(btn.dataset.leave);
+          document.getElementById("submitBtn").textContent = "수정 완료";
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+    } catch (err) {
+      box.innerHTML = '<div class="empty">불러오기 실패: ' + err.message + "</div>";
+    }
+  }
+
   document.getElementById("logForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = document.getElementById("submitBtn");
     const msg = document.getElementById("msg");
     msg.className = "msg";
     btn.disabled = true;
-    btn.textContent = "저장 중...";
 
     const d = new Date(dateInput.value + "T00:00:00");
     const dow = dowNames[d.getDay()];
     const dateLabel = `${d.getMonth() + 1}/${d.getDate()}`;
+    const tasks = document.getElementById("tasks").value.trim();
+    const leave = document.getElementById("leave").value.trim();
 
     try {
-      const res = await fetch("/api/submit-log", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          date: dateLabel,
-          dow,
-          tasks: document.getElementById("tasks").value.trim(),
-          leave: document.getElementById("leave").value.trim(),
-        }),
-      });
+      let res;
+      if (editingId) {
+        res = await fetch("/api/update-log", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editingId, tasks, leave }),
+        });
+      } else {
+        res = await fetch("/api/submit-log", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ date: dateLabel, dow, tasks, leave }),
+        });
+      }
       const data = await res.json();
       if (res.ok && data.success) {
         msg.className = "msg ok";
-        msg.textContent = "저장됐습니다.";
-        document.getElementById("tasks").value = "";
-        document.getElementById("leave").value = "";
+        msg.textContent = editingId ? "수정됐습니다." : "저장됐습니다.";
+        resetForm();
+        loadLogs();
       } else {
         msg.className = "msg err";
-        msg.textContent = "저장 실패: " + (data.error || "알 수 없는 오류");
+        msg.textContent = "실패: " + (data.error || "알 수 없는 오류");
       }
     } catch (err) {
       msg.className = "msg err";
-      msg.textContent = "저장 실패: " + err.message;
+      msg.textContent = "실패: " + err.message;
     } finally {
       btn.disabled = false;
-      btn.textContent = "저장";
     }
   });
+
+  loadLogs();
 </script>
 </body>
 </html>

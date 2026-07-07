@@ -27,12 +27,14 @@
 3. 만들어진 DB의 콘솔(Console) 탭에서 이 레포의 `schema.sql` 내용을 복사해서 실행
 
 ### 4. D1을 Pages 프로젝트에 연결
-1. 방금 만든 Pages 프로젝트 → Settings → Functions → D1 database bindings
-2. Variable name: `DB` / D1 database: 방금 만든 것 선택
+1. 방금 만든 Pages 프로젝트 → Settings → Bindings → "+ Add" (화면 구성이 바뀌어 "Functions" 대신 "Bindings"라는 이름일 수 있음)
+2. D1 database 선택 → Variable name: `DB` / D1 database: 방금 만든 것 선택
 
 ### 5. (선택) AI 바인딩 연결
-같은 Functions 설정 화면에서 "AI bindings" → Variable name: `AI` 추가
+같은 Bindings 화면에서 "+ Add" → Workers AI 선택 → Variable name: `AI`
 (이게 있어야 문체 다듬기가 작동하고, 없어도 원문 그대로 저장은 됩니다)
+
+**⚠️ 바인딩을 추가/저장한 뒤에는 반드시 한 번 재배포해야 적용됩니다.** (Deployments 탭에서 최신 배포 옆 "Retry deployment"를 누르거나, 아무 커밋이나 하나 push하면 됩니다.)
 
 ### 6. 관리자 비밀번호 설정 (창고/삭제 기능 쓸 경우)
 Settings → Variables and secrets → `ADMIN_PASSWORD` (Secret 타입)으로 원하는 비밀번호 추가
